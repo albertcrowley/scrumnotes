@@ -22,22 +22,33 @@ namespace ScrumNotes
         private void bGo_Click(object sender, EventArgs e)
         {
 
-            // Connect on port 993 using SSL.
-            using (ImapClient client = new ImapClient(tbServer.Text, 993, tbEmail.Text, tbPassword.Text,AuthMethod.Login,true))
+            try
             {
-                Console.WriteLine("We are connected!");
-
-                // Find messages that were sent from abc@def.com and have the string "Hello World" in their subject line.
-                IEnumerable<uint> uids = client.Search(
-                    SearchCondition.Subject("scrum notes")
-                );
-
-                foreach (uint id in uids)
+                // Connect on port 993 using SSL.
+                using (ImapClient client = new ImapClient(tbServer.Text, 993, tbEmail.Text, tbPassword.Text, AuthMethod.Login, true))
                 {
-                    Console.WriteLine(id);
-                    MailMessage mm= client.GetMessage(id);
-                    rtbOutput.Text = mm.Body;
+                    Console.WriteLine("We are connected!");
+
+                    // Find messages that were sent from abc@def.com and have the string "Hello World" in their subject line.
+                    IEnumerable<uint> uids = client.Search(
+                        SearchCondition.Subject("scrum notes")
+                    );
+
+                    foreach (uint id in uids)
+                    {
+                        Console.WriteLine(id);
+                        MailMessage mm = client.GetMessage(id);
+                        rtbOutput.Text = mm.Body;
+
+                        Drive drive = new Drive();
+                        drive.saveNotes(mm.Body);
+
+                    }
                 }
+            }
+            catch (S22.Imap.InvalidCredentialsException ex)
+            {
+                rtbOutput.Text = ex.ToString();
             }
 
         }

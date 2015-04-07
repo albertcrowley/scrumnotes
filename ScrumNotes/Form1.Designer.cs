@@ -54,6 +54,7 @@
             this.tbEmail.Name = "tbEmail";
             this.tbEmail.Size = new System.Drawing.Size(100, 20);
             this.tbEmail.TabIndex = 1;
+            this.tbEmail.Text = "albertcrowley@gmail.com";
             // 
             // label1
             // 
