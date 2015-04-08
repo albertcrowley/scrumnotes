@@ -1,6 +1,6 @@
 ﻿namespace ScrumNotes
 {
-    partial class Form1
+    partial class ScrumNotesForm
     {
         /// <summary>
         /// Required designer variable.

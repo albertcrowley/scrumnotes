@@ -18,6 +18,9 @@ namespace ScrumNotes
         private DriveService service = null;
         public string ScrumNotesFolderName = "Scrum Notes";
 
+        /// <summary>
+        /// as part of initialization, log in to Drive
+        /// </summary>
         public Drive()
         {
             UserCredential credential;
@@ -39,6 +42,10 @@ namespace ScrumNotes
 
         }
 
+        /// <summary>
+        /// Gets existing, or creates new folder on Google Drive
+        /// </summary>
+        /// <returns>Drive File pointing to the scrum notes folder</returns>
         public File getScrumNotesFolder()
         {
             List<Google.Apis.Drive.v2.Data.File> result = new List<Google.Apis.Drive.v2.Data.File>();
@@ -74,10 +81,16 @@ namespace ScrumNotes
         }
 
 
+        /// <summary>
+        /// Creates a scrum notes folder
+        /// 
+        /// </summary>
+        /// <returns>Drive File pointing to the scrum notes folder</returns>
+ 
         public File createScrumNotesFolder() {
             Google.Apis.Drive.v2.Data.File body = new Google.Apis.Drive.v2.Data.File();
-            body.Title = "Scrum Notes";
-            body.Description = "Scrum Notes";
+            body.Title = "Scrum Notes for Today";
+            body.Description = "Scrum Notes for Today";
             body.MimeType = "application/vnd.google-apps.folder";
 
             FilesResource.InsertRequest insReq = service.Files.Insert(body);
@@ -86,12 +99,14 @@ namespace ScrumNotes
 
         public void saveNotes(string noteText){
 
+            File parentFolder = getScrumNotesFolder();
             getScrumNotesFolder();
 
             Google.Apis.Drive.v2.Data.File body = new Google.Apis.Drive.v2.Data.File();
             body.Title = "Scrum Notes";
             body.Description = "Scrum Notes";
             body.MimeType = "text/plain";
+            body.Parents = new List<ParentReference>() { new ParentReference() {Id = parentFolder.Id }};
 
             System.IO.MemoryStream stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(noteText ?? ""));
 
