@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using S22.Imap;
 using System.Net.Mail;
+using System.Web;
+using System.Net;
 
 
 namespace ScrumNotes
@@ -15,6 +17,8 @@ namespace ScrumNotes
         string Email;
         string Password;
         ScrumNotesForm form;
+        string htmlHead = "<html><head><style>.statusWrapper {display:block; padding-bottom: 1em;}  .who {font-weight:bold;}</style></head><body>";
+        string htmlFoot = "</body></html>";
 
         /// <summary>
         /// Creates a Notes class
@@ -34,25 +38,36 @@ namespace ScrumNotes
         public string getNotes()
         {
             StringBuilder notes = new StringBuilder();
-            List<string> emails = getEmails();
+            List<MailMessage> emails = getEmails();
 
-            foreach (string email in emails)
+
+            notes.Append(htmlHead);
+            foreach (MailMessage email in emails)
             {
                 notes.Append(extractHTML(email));
             }
+            notes.Append(htmlFoot);
 
             return notes.ToString(); ;
         }
 
 
-        public string extractHTML(string bodyText)
+        public string extractHTML(MailMessage mm)
         {
-            return bodyText;
+            StringBuilder html =  new StringBuilder();
+
+            //WikiNetParser.WikiProvider.ConvertToHtml("test");
+
+            html.Append("<div class='statusWrapper'>");
+            html.Append("<div class='who'>" + WebUtility.HtmlEncode(mm.From.ToString()) + "</div>");
+            html.Append("<div class='status'>" + WebUtility.HtmlEncode(mm.Body.ToString()) + "</div>");
+            html.Append("</div>");
+            return html.ToString();
         }
 
-        public List<string> getEmails()
+        public List<MailMessage> getEmails()
         {
-            List<string> emails = new List<string>();
+            List<MailMessage> emails = new List<MailMessage>();
 
             try
             {
@@ -70,7 +85,7 @@ namespace ScrumNotes
                     {
                         Console.WriteLine(id);
                         MailMessage mm = client.GetMessage(id);
-                        emails.Add(mm.Body);
+                        emails.Add(mm);
                     }
                 }
             }

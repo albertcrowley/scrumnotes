@@ -16,7 +16,9 @@ namespace ScrumNotes
     class Drive
     {
         private DriveService service = null;
-        public string ScrumNotesFolderName = "Scrum Notes";
+        public string ScrumNotesFolderName = "Scrum Notes Folder";
+        public string ScrumNotesFileName = "Scrum Notes For " + DateTime.Today.ToShortDateString();
+
 
         /// <summary>
         /// as part of initialization, log in to Drive
@@ -89,29 +91,31 @@ namespace ScrumNotes
  
         public File createScrumNotesFolder() {
             Google.Apis.Drive.v2.Data.File body = new Google.Apis.Drive.v2.Data.File();
-            body.Title = "Scrum Notes for Today";
-            body.Description = "Scrum Notes for Today";
+            body.Title = ScrumNotesFolderName;
+            body.Description = ScrumNotesFolderName;
             body.MimeType = "application/vnd.google-apps.folder";
 
             FilesResource.InsertRequest insReq = service.Files.Insert(body);
-            return insReq.Execute();
+
+            return insReq.Execute(); // TODO: this doesn't return the newly created folder....not sure why
         }
 
-        public void saveNotes(string noteText){
+        public void saveNotes(string noteHtml){
 
             File parentFolder = getScrumNotesFolder();
-            getScrumNotesFolder();
+            parentFolder = getScrumNotesFolder();  // TODO: getScrumNotesFolder returns null when the folder didn't exist to start
 
             Google.Apis.Drive.v2.Data.File body = new Google.Apis.Drive.v2.Data.File();
-            body.Title = "Scrum Notes";
-            body.Description = "Scrum Notes";
-            body.MimeType = "text/plain";
+            body.Title = ScrumNotesFileName;
+            body.Description = ScrumNotesFileName;
+            body.MimeType = "text/html";
+            
             body.Parents = new List<ParentReference>() { new ParentReference() {Id = parentFolder.Id }};
 
-            System.IO.MemoryStream stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(noteText ?? ""));
+            System.IO.MemoryStream stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(noteHtml ?? ""));
 
-            FilesResource.InsertMediaUpload request = service.Files.Insert(body, stream, "text/plain");
-
+            FilesResource.InsertMediaUpload request = service.Files.Insert(body, stream, "text/html");
+            request.Convert = true;
             request.Upload();
 
 

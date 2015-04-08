@@ -33,9 +33,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tbPassword = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.rtbOutput = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tbServer = new System.Windows.Forms.TextBox();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // bGo
@@ -71,6 +71,7 @@
             this.tbPassword.Name = "tbPassword";
             this.tbPassword.Size = new System.Drawing.Size(100, 20);
             this.tbPassword.TabIndex = 3;
+            this.tbPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbPassword_KeyPress);
             // 
             // label2
             // 
@@ -80,14 +81,6 @@
             this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Password";
-            // 
-            // rtbOutput
-            // 
-            this.rtbOutput.Location = new System.Drawing.Point(55, 179);
-            this.rtbOutput.Name = "rtbOutput";
-            this.rtbOutput.Size = new System.Drawing.Size(343, 264);
-            this.rtbOutput.TabIndex = 5;
-            this.rtbOutput.Text = "";
             // 
             // label3
             // 
@@ -106,20 +99,28 @@
             this.tbServer.TabIndex = 7;
             this.tbServer.Text = "imap.gmail.com";
             // 
-            // Form1
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(30, 179);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(397, 250);
+            this.webBrowser1.TabIndex = 8;
+            // 
+            // ScrumNotesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(453, 464);
+            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.tbServer);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.rtbOutput);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbPassword);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbEmail);
             this.Controls.Add(this.bGo);
-            this.Name = "Form1";
+            this.Name = "ScrumNotesForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -133,9 +134,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbPassword;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RichTextBox rtbOutput;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbServer;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
 

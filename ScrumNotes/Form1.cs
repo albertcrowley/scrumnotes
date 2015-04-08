@@ -21,7 +21,7 @@ namespace ScrumNotes
         {
             Notes notes = new Notes(this);
             string s = notes.getNotes();
-            rtbOutput.Text = s;
+            webBrowser1.DocumentText = s;
             Drive drive = new Drive();
             drive.saveNotes(s);
         }
@@ -29,6 +29,14 @@ namespace ScrumNotes
         public string getServer() { return tbServer.Text; }
         public string getEmail() { return tbEmail.Text; }
         public string getPassword() { return tbPassword.Text; }
-        public void setMessage(string msg) { rtbOutput.Text = msg; }
+        public void setMessage(string msg) { webBrowser1.DocumentText = msg; }
+
+        private void tbPassword_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                bGo_Click(sender, null);
+            }
+        }
     }
 }
