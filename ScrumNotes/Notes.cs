@@ -13,6 +13,7 @@ namespace ScrumNotes
 {
     class Notes
     {
+        string subject = "scrum notes";
         string Server;
         string Email;
         string Password;
@@ -56,36 +57,50 @@ namespace ScrumNotes
         {
             StringBuilder html =  new StringBuilder();
 
-            //WikiNetParser.WikiProvider.ConvertToHtml("test");
+            WikiPlex.WikiEngine wEngine = new WikiPlex.WikiEngine();
+
+            
+
 
             html.Append("<div class='statusWrapper'>");
             html.Append("<div class='who'>" + WebUtility.HtmlEncode(mm.From.ToString()) + "</div>");
-            html.Append("<div class='status'>" + WebUtility.HtmlEncode(mm.Body.ToString()) + "</div>");
+            html.Append("<div class='status'>" + wEngine.Render(mm.Body.ToString()) + "</div>");
             html.Append("</div>");
             return html.ToString();
         }
 
         public List<MailMessage> getEmails()
         {
-            List<MailMessage> emails = new List<MailMessage>();
+            Dictionary<string, MailMessage> emails = new Dictionary<string, MailMessage>();  // used to keep just the newest from each user
 
             try
             {
                 // Connect on port 993 using SSL.
                 using (ImapClient client = new ImapClient(Server, 993, Email, Password, AuthMethod.Login, true))
                 {
-                    Console.WriteLine("We are connected!");
 
-                    // Find messages that were sent from abc@def.com and have the string "Hello World" in their subject line.
+                    DateTime time = DateTime.Now.AddHours(-24);
                     IEnumerable<uint> uids = client.Search(
-                        SearchCondition.Subject("scrum notes")
+                        SearchCondition.Subject(subject).And(SearchCondition.SentSince(time))
                     );
 
                     foreach (uint id in uids)
                     {
                         Console.WriteLine(id);
                         MailMessage mm = client.GetMessage(id);
-                        emails.Add(mm);
+                        string from = mm.From.ToString();
+                        if (emails.ContainsKey(from))
+                        {
+                            MailMessage existingMM = emails[from];
+                            if (existingMM.Date() < mm.Date())
+                            {
+                                emails[from] = mm;
+                            }
+                        }
+                        else
+                        {
+                            emails[from] = mm;
+                        }
                     }
                 }
             }
@@ -93,7 +108,7 @@ namespace ScrumNotes
             {
                 form.setMessage(ToString());
             }
-            return emails;
+            return emails.Values.ToList();
         }
     }
 
